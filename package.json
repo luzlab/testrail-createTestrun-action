@@ -1,5 +1,5 @@
 {
-  "name": "CreateLinkedTestRun",
+  "name": "create-tesrail-testrun",
   "version": "1.0.0",
   "description": "This action runs when a PR is opened and creates a linked TestRun in TestRail",
   "main": "dist/index.js",
@@ -12,12 +12,13 @@
   "license": "ISC",
   "dependencies": {
     "@actions/core": "^1.4.0",
-    "@actions/github": "^5.0.0"
+    "@actions/github": "^5.0.0",
+    "@octokit/webhooks-types": "^4.2.1",
+    "testrail-api": "^1.3.6",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.29.0",
-    "got": "^12.0.0-beta.1",
-    "testrail-api": "^1.3.6",
     "typescript": "^4.3.5"
   }
 }
