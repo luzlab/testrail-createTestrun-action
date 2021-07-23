@@ -6328,21 +6328,22 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 try {
-    var testrailSuite = _actions_core__WEBPACK_IMPORTED_MODULE_0___default().getInput('testrail_suite');
-    var testrailProject = _actions_core__WEBPACK_IMPORTED_MODULE_0___default().getInput('testrail_project');
-    var testrailURL = _actions_core__WEBPACK_IMPORTED_MODULE_0___default().getInput('testrail_URL');
-    console.log("testrailSuite " + testrailSuite + "!");
-    console.log("testrailProject " + testrailProject + "!");
-    console.log("testrailURL " + testrailURL + "!");
-    var time = (new Date()).toTimeString();
-    _actions_core__WEBPACK_IMPORTED_MODULE_0___default().setOutput("testrun_URL", time);
-    _actions_core__WEBPACK_IMPORTED_MODULE_0___default().setOutput("testrun_ID", Math.random() * 100);
+    var octokit = (0,_actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit)((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('github_token'));
     // Get the JSON webhook payload for the event that triggered the workflow
-    var payload = JSON.stringify((_actions_github__WEBPACK_IMPORTED_MODULE_1___default().context.payload), undefined, 2);
-    console.log("The event payload: " + payload);
+    var payload = JSON.stringify(_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload, undefined, 2);
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)("The event payload: " + payload);
+    var testrailSuite = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('testrail_suite');
+    var testrailProject = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('testrail_project');
+    var testrailURL = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('testrail_URL');
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)("testrailSuite " + testrailSuite + "!");
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)("testrailProject " + testrailProject + "!");
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)("testrailURL " + testrailURL + "!");
+    var time = new Date().toTimeString();
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("testrun_URL", time);
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("testrun_ID", Math.random() * 100);
 }
 catch (error) {
-    _actions_core__WEBPACK_IMPORTED_MODULE_0___default().setFailed(error.message);
+    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(error.message);
 }
 
 })();

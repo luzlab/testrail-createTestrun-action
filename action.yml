@@ -1,19 +1,22 @@
 name: 'Create linked TestRail TestRun for PR'
 description: 'This action automatically creates the structure to organize testiung on a per PR basis.'
 inputs:
-  testrail_URL: 
-    description: 'URL of the Testrail API. No trailing slash is necessary'
-    required: false
-    default: 'https://gs3.testrail.io'
+  testrail_token:
+    description: 'Testrail API token'
+    required: true
+  github_token:
+    description: 'Github token for the repoistory with permissions to add comments to a PR'
+    required: true
   testrail_project:
     description: 'ID of the Testrail project the test run should be added to'
     required: true
   testrail_suite:
     description: 'ID of the Test Suite for the test run'
     required: true
-  testrail_token:
-    description: 'Testrail API token'
-    required: true
+  testrail_URL: 
+    description: 'URL of the Testrail API. No trailing slash is necessary'
+    required: false
+    default: 'https://gs3.testrail.io'
 outputs:
   testrun_URL: 
     description: 'The URL for accessing the linked TestRun.'
