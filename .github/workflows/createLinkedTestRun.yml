@@ -11,9 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create TestRun
-        shell: bash
-        env:
+        uses: luzlab/testrail-createTestRun-action@main
+        with:
           testrail_token: ${{ secrets.TESTRAIL_TOKEN }}
-        run: |
-          asdf
-
+          testrail_suite: 8
+          testrail_project: 1
