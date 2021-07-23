@@ -1,0 +1,19 @@
+name: 'Create test run for PR'
+on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - main
+
+jobs:
+  createTestRun:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create TestRun
+        shell: bash
+        env:
+          testrail_token: ${{ secrets.TESTRAIL_TOKEN }}
+        run: |
+          asdf
+

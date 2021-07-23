@@ -1,0 +1,21 @@
+name: 'Create linked TestRail TestRun for PR'
+description: 'This action automatically creates the structure to organize testiung on a per PR basis.'
+inputs:
+  testrail_URL: 
+    description: 'The URL of the Testrail API. No trailing slash is necessary'
+    required: false
+    default: 'https://gs3.testrail.io'
+  testrail_project:
+    description: 'The ID of the TestRail project the test run should be added to'
+    required: true
+  testrail_suite:
+    description: 'The ID of the Test Suite for the test run'
+    required: true
+outputs:
+  testrun_URL: 
+    description: 'The URL for accessing the linked TestRun.'
+  testrun_ID:
+    description: 'The TestRail ID of the linked TestRun.'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
