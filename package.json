@@ -4,6 +4,7 @@
   "description": "This action runs when a PR is opened and creates a linked TestRun in TestRail",
   "main": "dist/index.js",
   "scripts": {
+    "build": "ncc build index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
