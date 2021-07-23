@@ -70,13 +70,13 @@ async function run() {
       name: `PR${prNumber}: ${prTitle}`,
       include_all: false,
       case_ids: [],
-      refs: [prNumber],
+      refs: `${prNumber}`,
       description
     };
 
     const testrun = await testrail.addRun(project.id, testrunRequest);
     console.log(testrun);
-    
+
     const time = new Date().toTimeString();
     setOutput('testrun_URL', time);
     setOutput('testrun_ID', Math.random() * 100);

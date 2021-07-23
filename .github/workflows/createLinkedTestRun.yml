@@ -18,4 +18,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           testrail_user: 0cd6ff85.thermofisher.onmicrosoft.com@amer.teams.ms
           testrail_suite: 8
-          testrail_project: 1
+          testrail_project: 25

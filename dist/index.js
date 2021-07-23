@@ -52192,7 +52192,7 @@ function run() {
                         name: "PR" + prNumber + ": " + prTitle,
                         include_all: false,
                         case_ids: [],
-                        refs: [prNumber],
+                        refs: "" + prNumber,
                         description: description
                     };
                     return [4 /*yield*/, testrail.addRun(project.id, testrunRequest)];
