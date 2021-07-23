@@ -15,5 +15,6 @@ jobs:
         uses: luzlab/testrail-createTestRun-action@main
         with:
           testrail_token: ${{ secrets.TESTRAIL_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           testrail_suite: 8
           testrail_project: 1

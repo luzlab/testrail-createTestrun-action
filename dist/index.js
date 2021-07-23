@@ -6327,23 +6327,25 @@ __nccwpck_require__.r(__webpack_exports__);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
 
 
+var getInput = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput, setOutput = _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput, setFailed = _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed, debug = _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug;
+var context = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context, getOctokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit;
 try {
-    var octokit = (0,_actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit)((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('github_token'));
+    var octokit = getOctokit(getInput('github_token'));
     // Get the JSON webhook payload for the event that triggered the workflow
-    var payload = JSON.stringify(_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload, undefined, 2);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)("The event payload: " + payload);
-    var testrailSuite = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('testrail_suite');
-    var testrailProject = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('testrail_project');
-    var testrailURL = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('testrail_URL');
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)("testrailSuite " + testrailSuite + "!");
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)("testrailProject " + testrailProject + "!");
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.debug)("testrailURL " + testrailURL + "!");
+    var payload = JSON.stringify(context.payload, undefined, 2);
+    debug("The event payload: " + payload);
+    var testrailSuite = getInput('testrail_suite');
+    var testrailProject = getInput('testrail_project');
+    var testrailURL = getInput('testrail_URL');
+    debug("testrailSuite " + testrailSuite + "!");
+    debug("testrailProject " + testrailProject + "!");
+    debug("testrailURL " + testrailURL + "!");
     var time = new Date().toTimeString();
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("testrun_URL", time);
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput)("testrun_ID", Math.random() * 100);
+    setOutput("testrun_URL", time);
+    setOutput("testrun_ID", Math.random() * 100);
 }
 catch (error) {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(error.message);
+    setFailed(error.message);
 }
 
 })();

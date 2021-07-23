@@ -1,5 +1,8 @@
-import { getInput, setOutput, setFailed, debug } from '@actions/core';
-import { context , getOctokit } from '@actions/github';
+import * as core from '@actions/core';
+import * as github from '@actions/github';
+
+const { getInput, setOutput, setFailed, debug } = core;
+const { context, getOctokit } = github;
 
 try {
   const octokit = getOctokit(getInput('github_token'));
