@@ -45506,14 +45506,12 @@ var context = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context, getOctokit =
 run();
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var octokit, payload, host, password, user, testrail, testrailSuite, testrailProject, project, suite, time, error_1;
+        var octokit, host, password, user, testrail, testrailSuite, testrailProject, project, suite, time, pullrequest, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
                     octokit = getOctokit(getInput('github_token'));
-                    payload = JSON.stringify(context.payload, undefined, 2);
-                    debug("The event payload: " + payload);
                     host = getInput('testrail_URL');
                     password = getInput('testrail_token');
                     user = getInput('testrail_user');
@@ -45522,15 +45520,18 @@ function run() {
                     testrailProject = parseInt(getInput('testrail_project'));
                     return [4 /*yield*/, testrail.getProject(testrailProject)];
                 case 1:
-                    project = _a.sent();
+                    project = (_a.sent()).body;
                     console.log(project);
                     return [4 /*yield*/, testrail.getSuite(testrailSuite)];
                 case 2:
-                    suite = _a.sent();
+                    suite = (_a.sent()).body;
                     console.log(suite);
                     time = new Date().toTimeString();
                     setOutput('testrun_URL', time);
                     setOutput('testrun_ID', Math.random() * 100);
+                    console.log(context.payload);
+                    pullrequest = context.payload.pull_request;
+                    console.log(pullrequest);
                     return [3 /*break*/, 4];
                 case 3:
                     error_1 = _a.sent();
