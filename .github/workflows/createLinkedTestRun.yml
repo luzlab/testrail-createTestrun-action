@@ -3,6 +3,7 @@ on:
   pull_request:
     types:
       - opened
+      - reopened
     branches:
       - main
 
@@ -14,5 +15,7 @@ jobs:
         uses: luzlab/testrail-createTestRun-action@main
         with:
           testrail_token: ${{ secrets.TESTRAIL_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          testrail_user: 0cd6ff85.thermofisher.onmicrosoft.com@amer.teams.ms
           testrail_suite: 8
           testrail_project: 1

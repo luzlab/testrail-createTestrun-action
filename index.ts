@@ -1,22 +1,37 @@
-import core from '@actions/core';
-import github from '@actions/github';
+import * as core from '@actions/core';
+import * as github from '@actions/github';
+import Testrail from 'testrail-api';
 
-try {
-  const testrailSuite = core.getInput('testrail_suite');
-  const testrailProject = core.getInput('testrail_project');
-  const testrailURL = core.getInput('testrail_URL');
+const { getInput, setOutput, setFailed, debug } = core;
+const { context, getOctokit } = github;
 
-  console.log(`testrailSuite ${testrailSuite}!`);
-  console.log(`testrailProject ${testrailProject}!`);
-  console.log(`testrailURL ${testrailURL}!`);
-  
-  const time = (new Date()).toTimeString();
-  core.setOutput("testrun_URL", time);
-  core.setOutput("testrun_ID", Math.random()*100);
-  
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
-} catch (error) {
-  core.setFailed(error.message);
+run();
+async function run() {
+  try {
+    const octokit = getOctokit(getInput('github_token'));
+
+    // Get the JSON webhook payload for the event that triggered the workflow
+    const payload = JSON.stringify(context.payload, undefined, 2);
+    debug(`The event payload: ${payload}`);
+
+    const host = getInput('testrail_URL');
+    const password = getInput('testrail_token');
+    const user = getInput('testrail_user');
+    const testrail = new Testrail({ host, password, user });
+
+    const testrailSuite = parseInt(getInput('testrail_suite'));
+    const testrailProject = parseInt(getInput('testrail_project'));
+
+    const project = await testrail.getProject(testrailProject);
+    console.log(project);
+
+    const suite = await testrail.getSuite(testrailSuite);
+    console.log(suite);
+
+    const time = new Date().toTimeString();
+    setOutput('testrun_URL', time);
+    setOutput('testrun_ID', Math.random() * 100);
+  } catch (error) {
+    setFailed(error.message);
+  }
 }
