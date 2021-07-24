@@ -35,10 +35,12 @@ The Github API token used to add the comment to the PR
 
 ## Example usage
 
+```
 uses: luzlab/testrail-createTestRun-action@v1
 with:
   testrail_token: ${{ secrets.TESTRAIL_TOKEN }}
   github_token: ${{ secrets.GITHUB_TOKEN }}
-  testrail_user: 0cd6ff85.thermofisher.onmicrosoft.com@amer.teams.ms
+  testrail_user: testrailuser@somecompany.com
   testrail_suite: 25
   testrail_project: 7
+```
