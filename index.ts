@@ -69,7 +69,7 @@ async function run() {
 
     core.startGroup('Create comment on PR');
     const { id: testrunID, url: testrunURL } = testrun;
-    const pullrequestComment = `This comment was auto-generated and contains information used by the TestRail/GitHub integration\nDO NOT EDIT.`;
+    const pullrequestComment = `This comment was auto-generated and contains information used by the TestRail/GitHub integration\n### DO NOT EDIT COMMENT`;
     const pullrequestData = {
       testrunID,
       testrunURL,

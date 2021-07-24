@@ -52183,7 +52183,7 @@ function run() {
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup('Create comment on PR');
                     testrunID = testrun.id, testrunURL = testrun.url;
-                    pullrequestComment = "This comment was auto-generated and contains information used by the TestRail/GitHub integration\nDO NOT EDIT.";
+                    pullrequestComment = "This comment was auto-generated and contains information used by the TestRail/GitHub integration\n### DO NOT EDIT COMMENT";
                     pullrequestData = {
                         testrunID: testrunID,
                         testrunURL: testrunURL,
