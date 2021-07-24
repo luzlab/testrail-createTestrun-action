@@ -9,15 +9,29 @@ used by later actions.
 
 ### `testrail_project`
 
-**Required** The ID of the TestRail project the test run should be added to.
+**Required** The ID of the Testrail project the testrun should be added to.
 
 ### `testrail_suite`
 
-**Required** The ID of the Test Suite for the test run.
+**Required** The testsuite ID that contains all the acceptance test. No testcases will
+be added to the testrun. Instead, testers are expected to add testcases to the testrun
+manually.
 
 ### `testrail_URL`
 
 The URL of the TestRail server. Default `"https://gs3.testrail.io"`.
+
+### `testrail_user`
+
+The Testrail user email.
+
+### `testrail_token`
+
+The token for logging into Testrail.
+
+### `github_token`
+
+The Github API token used to add the comment to the PR
 
 ## Example usage
 
