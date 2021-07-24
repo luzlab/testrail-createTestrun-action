@@ -36,7 +36,6 @@ async function run() {
         html: { href: pullrequestLink },
       },
     } = pull_request;
-    console.log(pull_request);
 
     const octokit = getOctokit(getInput('github_token')).rest;
 
@@ -49,10 +48,14 @@ async function run() {
     const testrailProject = parseInt(getInput('testrail_project'));
 
     ///// Check for [no testrun] in PR
-    for (const token in skipTokens) {
+    core.startGroup('Create Testrail testrun');
+    for (const token of skipTokens) {
+      console.log(`checking for '${token}'...`)
       if (pullrequestDescription!.includes(token)) {
-        console.log(`PR description contains ${token}, aborting action.`);
+        console.log(`... PR description contains ${token}, aborting action.`);
         return;
+      } else {
+        console.log('... not found')
       }
     };
 
