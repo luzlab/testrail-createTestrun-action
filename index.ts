@@ -39,22 +39,13 @@ async function run() {
     const testrailSuite = parseInt(getInput('testrail_suite'));
     const testrailProject = parseInt(getInput('testrail_project'));
 
-    const project = (await testrail.getProject(testrailProject)).body;
-    console.log(project);
+    // const project = (await testrail.getProject(testrailProject)).body;
+    // console.log(project);
 
-    const suite = (await testrail.getSuite(testrailSuite)).body;
-    console.log(suite);
+    // const suite = (await testrail.getSuite(testrailSuite)).body;
+    // console.log(suite);
 
-    const pullrequestComment = `This comment was auto-generated and contains information used by the TestRail/GitHub integration\nDO NOT EDIT.`;
-    const body = `${pullrequestComment}\n...\n${stringify(pullrequestData)}`;
-    const commentRequest = {
-      issue_number: pullrequestNumber,
-      owner: repoOwner,
-      repo: repoName,
-      body,
-    };
-    octokit.issues.createComment(commentRequest);
-
+    core.startGroup('Create Testrail testrun');
     const testrunDescription = `This testrun was auto-generated for a GitHub pull request. Please add test cases and run as needed. Click the "Push Results" button to send the test results to Github.\n\n##### DO NOT EDIT DESCRIPTION BELOW THIS LINE ######`;
     const testrunData = {
       pullrequestLink,
@@ -63,19 +54,36 @@ async function run() {
       repoOwner,
       repoName,
     };
-    const description = `${testrunDescription}\n...\n${stringify(testrunData)}`;
-
     const testrunRequest = {
-      suite_id: suite.id,
+      suite_id: testrailSuite,
       name: `PR${pullrequestNumber}: ${pullrequestTitle}`,
       include_all: false,
       case_ids: [],
       refs: `${pullrequestNumber}`,
-      description,
+      description: `${testrunDescription}\n...\n${stringify(testrunData)}`,
     };
 
-    const testrun = await testrail.addRun(project.id, testrunRequest);
+    const testrun = (await testrail.addRun(testrailProject, testrunRequest)).body;
     console.log(testrun);
+    core.endGroup();
+
+    core.startGroup('Create comment on PR');
+    const { id: testrunID, url: testrunURL } = testrun;
+    const pullrequestComment = `This comment was auto-generated and contains information used by the TestRail/GitHub integration\nDO NOT EDIT.`;
+    const pullrequestData = {
+      testrunID,
+      testrunURL,
+    };
+    const body = `${pullrequestComment}\n...\n${stringify(pullrequestData)}`;
+    const commentRequest = {
+      issue_number: pullrequestNumber,
+      owner: repoOwner,
+      repo: repoName,
+      body,
+    };
+    const comment = await octokit.issues.createComment(commentRequest);
+    console.log(comment);
+    core.endGroup();
 
     const time = new Date().toTimeString();
     setOutput('testrun_URL', time);
