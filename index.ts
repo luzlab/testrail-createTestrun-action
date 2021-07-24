@@ -12,15 +12,22 @@ async function run() {
   try {
     // Get the JSON webhook payload for the event that triggered the workflow
     const {
-      number: prNumber,
+      number: pullrequestNumber,
       pull_request,
       repository,
     } = context.payload as PullRequestOpenedEvent;
+
     const {
-      owner: { login },
-      name,
+      owner: { login: repoOwner },
+      name: repoName,
     } = repository;
-    const { title: prTitle } = pull_request;
+
+    const {
+      title: pullrequestTitle,
+      _links: {
+        html: { href: pullrequestLink },
+      },
+    } = pull_request;
 
     const octokit = getOctokit(getInput('github_token')).rest;
 
@@ -39,39 +46,32 @@ async function run() {
     console.log(suite);
 
     const pullrequestComment = `This comment was auto-generated and contains information used by the TestRail/GitHub integration\nDO NOT EDIT.`;
-    const pullrequestData = {
-      testrailHost: host,
-      testProject: project.name,
-      testSuite: suite.name,
-      repoOwner: login,
-      repoName: name,
-      pullrequest: prNumber,
-      pullrequestTitle: prTitle,
-    };
     const body = `${pullrequestComment}\n...\n${stringify(pullrequestData)}`;
-    console.log(body);
-
-    octokit.issues.createComment()
+    const commentRequest = {
+      issue_number: pullrequestNumber,
+      owner: repoOwner,
+      repo: repoName,
+      body,
+    };
+    octokit.issues.createComment(commentRequest);
 
     const testrunDescription = `This testrun was auto-generated for a GitHub pull request. Please add test cases and run as needed. Click the "Push Results" button to send the test results to Github.\n\n##### DO NOT EDIT DESCRIPTION BELOW THIS LINE ######`;
     const testrunData = {
-      testrailHost: host,
-      testProject: project.name,
-      testSuite: suite.name,
-      repoOwner: login,
-      repoName: name,
-      pullrequest: prNumber,
-      pullrequestTitle: prTitle,
+      pullrequestLink,
+      pullrequestNumber,
+      pullrequestTitle,
+      repoOwner,
+      repoName,
     };
-    const description = `${pullrequestComment}\n...\n${stringify(pullrequestData)}`;
+    const description = `${testrunDescription}\n...\n${stringify(testrunData)}`;
 
     const testrunRequest = {
       suite_id: suite.id,
-      name: `PR${prNumber}: ${prTitle}`,
+      name: `PR${pullrequestNumber}: ${pullrequestTitle}`,
       include_all: false,
       case_ids: [],
-      refs: `${prNumber}`,
-      description
+      refs: `${pullrequestNumber}`,
+      description,
     };
 
     const testrun = await testrail.addRun(project.id, testrunRequest);
