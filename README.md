@@ -33,6 +33,16 @@ The token for logging into Testrail.
 
 The Github API token used to add the comment to the PR
 
+## Usage
+
+If the pullrequest description includes any of the following strings, this action
+will _not_ create a testrun.
+
+- `[skip testrun]`
+- `[no testrun]`
+- `***NO_TESTRUN***`
+- `skip-testrun`
+
 ## Example usage
 
 ```

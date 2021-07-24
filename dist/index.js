@@ -52137,17 +52137,23 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
 
 var getInput = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput, setOutput = _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput, setFailed = _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed, debug = _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug;
 var context = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context, getOctokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit;
+var skipTokens = [
+    '[skip testrun]',
+    '[no testrun]',
+    '***NO_TESTRUN***',
+    'skip-testrun',
+];
 run();
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestLink, octokit, host, password, user, testrail, testrailSuite, testrailProject, testrunRequest, testrun, testrunID, testrunURL, pullrequestComment, pullrequestData, body, commentRequest, comment, testrunDescription, testrunData, testrunUpdateRequest, testrunUpdate, time, error_1;
+        var _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestDescription_1, pullrequestLink, octokit, host, password, user, testrail, testrailSuite, testrailProject, testrunRequest, testrun, testrunID, testrunURL, pullrequestComment, pullrequestData, commentData, commentRequest, comment, testrunDescription, testrunData, testrunUpdateRequest, testrunUpdate, time, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 4, , 5]);
                     _a = context.payload, pullrequestNumber = _a.number, pull_request = _a.pull_request, repository = _a.repository;
                     repoOwner = repository.owner.login, repoName = repository.name;
-                    pullrequestTitle = pull_request.title, pullrequestLink = pull_request._links.html.href;
+                    pullrequestTitle = pull_request.title, pullrequestDescription_1 = pull_request.body, pullrequestLink = pull_request._links.html.href;
                     octokit = getOctokit(getInput('github_token')).rest;
                     host = getInput('testrail_URL');
                     password = getInput('testrail_token');
@@ -52155,6 +52161,14 @@ function run() {
                     testrail = new (testrail_api__WEBPACK_IMPORTED_MODULE_2___default())({ host: host, password: password, user: user });
                     testrailSuite = parseInt(getInput('testrail_suite'));
                     testrailProject = parseInt(getInput('testrail_project'));
+                    ///// Check for [no testrun] in PR
+                    skipTokens.forEach(function (token) {
+                        if (pullrequestDescription_1.includes(token)) {
+                            console.log("PR description contains " + token + ", aborting action.");
+                            return;
+                        }
+                    });
+                    ///// Create Testrail testrun
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup('Create Testrail testrun');
                     testrunRequest = {
                         suite_id: testrailSuite,
@@ -52169,6 +52183,7 @@ function run() {
                     testrun = (_b.sent()).body;
                     console.log(testrun);
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
+                    ///// Create comment on PR
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup('Create comment on PR');
                     testrunID = testrun.id, testrunURL = testrun.url;
                     pullrequestComment = "This comment was auto-generated and contains information used by the TestRail/GitHub integration\n### DO NOT EDIT COMMENT BELOW THIS LINE";
@@ -52176,18 +52191,19 @@ function run() {
                         testrunID: testrunID,
                         testrunURL: testrunURL,
                     };
-                    body = pullrequestComment + "\n...\n" + (0,yaml__WEBPACK_IMPORTED_MODULE_3__.stringify)(pullrequestData);
+                    commentData = pullrequestComment + "\n...\n" + (0,yaml__WEBPACK_IMPORTED_MODULE_3__.stringify)(pullrequestData);
                     commentRequest = {
                         issue_number: pullrequestNumber,
                         owner: repoOwner,
                         repo: repoName,
-                        body: body,
+                        body: commentData,
                     };
                     return [4 /*yield*/, octokit.issues.createComment(commentRequest)];
                 case 2:
                     comment = (_b.sent()).data;
                     console.log(comment);
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
+                    ///// Update testrun description
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup('Update testrun description');
                     testrunDescription = "This testrun was auto-generated for a GitHub pull request. Please add test cases and run as needed. Click the \"Push Results\" button to send the test results to Github.\n\n##### DO NOT EDIT DESCRIPTION BELOW THIS LINE ######";
                     testrunData = {
@@ -52195,7 +52211,6 @@ function run() {
                         pullrequestNumber: pullrequestNumber,
                         pullrequestTitle: pullrequestTitle,
                         pullrequestComment: comment.id,
-                        repoName: repoName,
                     };
                     testrunUpdateRequest = {
                         description: testrunDescription + "\n...\n" + (0,yaml__WEBPACK_IMPORTED_MODULE_3__.stringify)(testrunData),

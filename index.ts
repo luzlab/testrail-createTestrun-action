@@ -7,6 +7,13 @@ import { stringify } from 'yaml';
 const { getInput, setOutput, setFailed, debug } = core;
 const { context, getOctokit } = github;
 
+const skipTokens = [
+  '[skip testrun]',
+  '[no testrun]',
+  '***NO_TESTRUN***',
+  'skip-testrun',
+];
+
 run();
 async function run() {
   try {
@@ -24,6 +31,7 @@ async function run() {
 
     const {
       title: pullrequestTitle,
+      body: pullrequestDescription,
       _links: {
         html: { href: pullrequestLink },
       },
@@ -39,6 +47,15 @@ async function run() {
     const testrailSuite = parseInt(getInput('testrail_suite'));
     const testrailProject = parseInt(getInput('testrail_project'));
 
+    ///// Check for [no testrun] in PR
+    skipTokens.forEach((token) => {
+      if (pullrequestDescription!.includes(token)) {
+        console.log(`PR description contains ${token}, aborting action.`);
+        return;
+      }
+    });
+
+    ///// Create Testrail testrun
     core.startGroup('Create Testrail testrun');
     const testrunRequest = {
       suite_id: testrailSuite,
@@ -48,7 +65,6 @@ async function run() {
       refs: `${pullrequestNumber}`,
       description: 'in progres...',
     };
-
     const { body: testrun } = await testrail.addRun(
       testrailProject,
       testrunRequest,
@@ -56,6 +72,7 @@ async function run() {
     console.log(testrun);
     core.endGroup();
 
+    ///// Create comment on PR
     core.startGroup('Create comment on PR');
     const { id: testrunID, url: testrunURL } = testrun;
     const pullrequestComment = `This comment was auto-generated and contains information used by the TestRail/GitHub integration\n### DO NOT EDIT COMMENT BELOW THIS LINE`;
@@ -63,12 +80,14 @@ async function run() {
       testrunID,
       testrunURL,
     };
-    const body = `${pullrequestComment}\n...\n${stringify(pullrequestData)}`;
+    const commentData = `${pullrequestComment}\n...\n${stringify(
+      pullrequestData,
+    )}`;
     const commentRequest = {
       issue_number: pullrequestNumber,
       owner: repoOwner,
       repo: repoName,
-      body,
+      body: commentData,
     };
     const { data: comment } = await octokit.issues.createComment(
       commentRequest,
@@ -76,6 +95,7 @@ async function run() {
     console.log(comment);
     core.endGroup();
 
+    ///// Update testrun description
     core.startGroup('Update testrun description');
     const testrunDescription = `This testrun was auto-generated for a GitHub pull request. Please add test cases and run as needed. Click the "Push Results" button to send the test results to Github.\n\n##### DO NOT EDIT DESCRIPTION BELOW THIS LINE ######`;
     const testrunData = {
@@ -83,7 +103,6 @@ async function run() {
       pullrequestNumber,
       pullrequestTitle,
       pullrequestComment: comment.id,
-      repoName,
     };
     const testrunUpdateRequest = {
       description: `${testrunDescription}\n...\n${stringify(testrunData)}`,
