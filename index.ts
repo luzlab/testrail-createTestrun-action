@@ -58,7 +58,7 @@ async function run() {
 
     core.startGroup('Create comment on PR');
     const { id: testrunID, url: testrunURL } = testrun;
-    const pullrequestComment = `This comment was auto-generated and contains information used by the TestRail/GitHub integration\n### DO NOT EDIT COMMENT`;
+    const pullrequestComment = `This comment was auto-generated and contains information used by the TestRail/GitHub integration\n### DO NOT EDIT COMMENT BELOW THIS LINE`;
     const pullrequestData = {
       testrunID,
       testrunURL,
@@ -85,10 +85,14 @@ async function run() {
       pullrequestComment: comment.id,
       repoName,
     };
-    const testrunUpdate = {
+    const testrunUpdateRequest = {
       description: `${testrunDescription}\n...\n${stringify(testrunData)}`,
     } as any;
-    testrail.updateRun(testrunID, testrunUpdate);
+    const { body: testrunUpdate } = await testrail.updateRun(
+      testrunID,
+      testrunUpdateRequest,
+    );
+    console.log(testrunUpdate);
     core.endGroup();
 
     const time = new Date().toTimeString();

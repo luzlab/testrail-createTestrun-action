@@ -52140,11 +52140,11 @@ var context = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context, getOctokit =
 run();
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestLink, octokit, host, password, user, testrail, testrailSuite, testrailProject, testrunRequest, testrun, testrunID, testrunURL, pullrequestComment, pullrequestData, body, commentRequest, comment, testrunDescription, testrunData, testrunUpdate, time, error_1;
+        var _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestLink, octokit, host, password, user, testrail, testrailSuite, testrailProject, testrunRequest, testrun, testrunID, testrunURL, pullrequestComment, pullrequestData, body, commentRequest, comment, testrunDescription, testrunData, testrunUpdateRequest, testrunUpdate, time, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    _b.trys.push([0, 3, , 4]);
+                    _b.trys.push([0, 4, , 5]);
                     _a = context.payload, pullrequestNumber = _a.number, pull_request = _a.pull_request, repository = _a.repository;
                     repoOwner = repository.owner.login, repoName = repository.name;
                     pullrequestTitle = pull_request.title, pullrequestLink = pull_request._links.html.href;
@@ -52171,7 +52171,7 @@ function run() {
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup('Create comment on PR');
                     testrunID = testrun.id, testrunURL = testrun.url;
-                    pullrequestComment = "This comment was auto-generated and contains information used by the TestRail/GitHub integration\n### DO NOT EDIT COMMENT";
+                    pullrequestComment = "This comment was auto-generated and contains information used by the TestRail/GitHub integration\n### DO NOT EDIT COMMENT BELOW THIS LINE";
                     pullrequestData = {
                         testrunID: testrunID,
                         testrunURL: testrunURL,
@@ -52197,20 +52197,23 @@ function run() {
                         pullrequestComment: comment.id,
                         repoName: repoName,
                     };
-                    testrunUpdate = {
+                    testrunUpdateRequest = {
                         description: testrunDescription + "\n...\n" + (0,yaml__WEBPACK_IMPORTED_MODULE_3__.stringify)(testrunData),
                     };
-                    testrail.updateRun(testrunID, testrunUpdate);
+                    return [4 /*yield*/, testrail.updateRun(testrunID, testrunUpdateRequest)];
+                case 3:
+                    testrunUpdate = (_b.sent()).body;
+                    console.log(testrunUpdate);
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
                     time = new Date().toTimeString();
                     setOutput('testrun_URL', time);
                     setOutput('testrun_ID', Math.random() * 100);
-                    return [3 /*break*/, 4];
-                case 3:
+                    return [3 /*break*/, 5];
+                case 4:
                     error_1 = _b.sent();
                     setFailed(error_1.message);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });

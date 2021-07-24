@@ -1,34 +1,30 @@
-# `Create linked TestRail TestRun for PR` GitHub Action
+# Create Testrail testrun for PR
 
-This action creates a Test Run in TestRail when a PR is opened. This creates the basic
-structure for organizing tests on a per PR basis. 
+This action the basic structure for organizing tests on a per PR basis. When a PR is
+opened, this action creates a new testrun in Testrail and adds a comment to the pullrequest.
+The testrun description and the pullrequest comment contain information that's
+used by later actions. 
 
 ## Inputs
 
-## `testrail_project`
+### `testrail_project`
 
 **Required** The ID of the TestRail project the test run should be added to.
 
-## `testrail_suite`
+### `testrail_suite`
 
 **Required** The ID of the Test Suite for the test run.
 
-## `testrail_URL`
+### `testrail_URL`
 
 The URL of the TestRail server. Default `"https://gs3.testrail.io"`.
 
-## Outputs
-
-## `testrun_URL`
-
-The URL for accessing the linked Test Run.
-
-## `testrun_ID`
-
-The TestRail ID of the linked Test Run.
-
 ## Example usage
 
-uses: actions/hello-world-javascript-action@v1.1
+uses: luzlab/testrail-createTestRun-action@v1
 with:
-  who-to-greet: 'Mona the Octocat'
+  testrail_token: ${{ secrets.TESTRAIL_TOKEN }}
+  github_token: ${{ secrets.GITHUB_TOKEN }}
+  testrail_user: 0cd6ff85.thermofisher.onmicrosoft.com@amer.teams.ms
+  testrail_suite: 25
+  testrail_project: 7

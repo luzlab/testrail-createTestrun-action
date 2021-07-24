@@ -11,7 +11,7 @@ jobs:
   createTestRun:
     runs-on: ubuntu-latest
     steps:
-      - name: Create TestRun
+      - name: Create testrun
         uses: luzlab/testrail-createTestRun-action@main
         with:
           testrail_token: ${{ secrets.TESTRAIL_TOKEN }}
