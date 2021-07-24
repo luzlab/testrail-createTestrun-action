@@ -1,4 +1,4 @@
-name: 'Create linked TestRail TestRun for PR'
+name: 'Create TestRail testrun for PR'
 description: 'This action automatically creates the structure to organize testiung on a per PR basis.'
 inputs:
   testrail_token:
@@ -20,11 +20,6 @@ inputs:
     description: 'URL of the Testrail API. No trailing slash is necessary. For example "https://gs3.testrail.io"'
     required: false
     default: 'https://gs3.testrail.io'
-outputs:
-  testrun_URL: 
-    description: 'The URL for accessing the linked TestRun.'
-  testrun_ID:
-    description: 'The TestRail ID of the linked TestRun.'
 runs:
   using: 'node12'
   main: 'dist/index.js'

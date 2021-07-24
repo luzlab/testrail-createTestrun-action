@@ -39,31 +39,20 @@ async function run() {
     const testrailSuite = parseInt(getInput('testrail_suite'));
     const testrailProject = parseInt(getInput('testrail_project'));
 
-    // const project = (await testrail.getProject(testrailProject)).body;
-    // console.log(project);
-
-    // const suite = (await testrail.getSuite(testrailSuite)).body;
-    // console.log(suite);
-
     core.startGroup('Create Testrail testrun');
-    const testrunDescription = `This testrun was auto-generated for a GitHub pull request. Please add test cases and run as needed. Click the "Push Results" button to send the test results to Github.\n\n##### DO NOT EDIT DESCRIPTION BELOW THIS LINE ######`;
-    const testrunData = {
-      pullrequestLink,
-      pullrequestNumber,
-      pullrequestTitle,
-      repoOwner,
-      repoName,
-    };
     const testrunRequest = {
       suite_id: testrailSuite,
       name: `PR${pullrequestNumber}: ${pullrequestTitle}`,
       include_all: false,
       case_ids: [],
       refs: `${pullrequestNumber}`,
-      description: `${testrunDescription}\n...\n${stringify(testrunData)}`,
+      description: 'in progres...',
     };
 
-    const testrun = (await testrail.addRun(testrailProject, testrunRequest)).body;
+    const { body: testrun } = await testrail.addRun(
+      testrailProject,
+      testrunRequest,
+    );
     console.log(testrun);
     core.endGroup();
 
@@ -81,8 +70,25 @@ async function run() {
       repo: repoName,
       body,
     };
-    const comment = await octokit.issues.createComment(commentRequest);
+    const { data: comment } = await octokit.issues.createComment(
+      commentRequest,
+    );
     console.log(comment);
+    core.endGroup();
+
+    core.startGroup('Update testrun description');
+    const testrunDescription = `This testrun was auto-generated for a GitHub pull request. Please add test cases and run as needed. Click the "Push Results" button to send the test results to Github.\n\n##### DO NOT EDIT DESCRIPTION BELOW THIS LINE ######`;
+    const testrunData = {
+      pullrequestLink,
+      pullrequestNumber,
+      pullrequestTitle,
+      pullrequestComment: comment.id,
+      repoName,
+    };
+    const testrunUpdate = {
+      description: `${testrunDescription}\n...\n${stringify(testrunData)}`,
+    } as any;
+    testrail.updateRun(testrunID, testrunUpdate);
     core.endGroup();
 
     const time = new Date().toTimeString();

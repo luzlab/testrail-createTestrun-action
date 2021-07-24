@@ -52140,7 +52140,7 @@ var context = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context, getOctokit =
 run();
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestLink, octokit, host, password, user, testrail, testrailSuite, testrailProject, testrunDescription, testrunData, testrunRequest, testrun, testrunID, testrunURL, pullrequestComment, pullrequestData, body, commentRequest, comment, time, error_1;
+        var _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestLink, octokit, host, password, user, testrail, testrailSuite, testrailProject, testrunRequest, testrun, testrunID, testrunURL, pullrequestComment, pullrequestData, body, commentRequest, comment, testrunDescription, testrunData, testrunUpdate, time, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -52155,26 +52155,14 @@ function run() {
                     testrail = new (testrail_api__WEBPACK_IMPORTED_MODULE_2___default())({ host: host, password: password, user: user });
                     testrailSuite = parseInt(getInput('testrail_suite'));
                     testrailProject = parseInt(getInput('testrail_project'));
-                    // const project = (await testrail.getProject(testrailProject)).body;
-                    // console.log(project);
-                    // const suite = (await testrail.getSuite(testrailSuite)).body;
-                    // console.log(suite);
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup('Create Testrail testrun');
-                    testrunDescription = "This testrun was auto-generated for a GitHub pull request. Please add test cases and run as needed. Click the \"Push Results\" button to send the test results to Github.\n\n##### DO NOT EDIT DESCRIPTION BELOW THIS LINE ######";
-                    testrunData = {
-                        pullrequestLink: pullrequestLink,
-                        pullrequestNumber: pullrequestNumber,
-                        pullrequestTitle: pullrequestTitle,
-                        repoOwner: repoOwner,
-                        repoName: repoName,
-                    };
                     testrunRequest = {
                         suite_id: testrailSuite,
                         name: "PR" + pullrequestNumber + ": " + pullrequestTitle,
                         include_all: false,
                         case_ids: [],
                         refs: "" + pullrequestNumber,
-                        description: testrunDescription + "\n...\n" + (0,yaml__WEBPACK_IMPORTED_MODULE_3__.stringify)(testrunData),
+                        description: 'in progres...',
                     };
                     return [4 /*yield*/, testrail.addRun(testrailProject, testrunRequest)];
                 case 1:
@@ -52197,8 +52185,22 @@ function run() {
                     };
                     return [4 /*yield*/, octokit.issues.createComment(commentRequest)];
                 case 2:
-                    comment = _b.sent();
+                    comment = (_b.sent()).data;
                     console.log(comment);
+                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
+                    _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup('Update testrun description');
+                    testrunDescription = "This testrun was auto-generated for a GitHub pull request. Please add test cases and run as needed. Click the \"Push Results\" button to send the test results to Github.\n\n##### DO NOT EDIT DESCRIPTION BELOW THIS LINE ######";
+                    testrunData = {
+                        pullrequestLink: pullrequestLink,
+                        pullrequestNumber: pullrequestNumber,
+                        pullrequestTitle: pullrequestTitle,
+                        pullrequestComment: comment.id,
+                        repoName: repoName,
+                    };
+                    testrunUpdate = {
+                        description: testrunDescription + "\n...\n" + (0,yaml__WEBPACK_IMPORTED_MODULE_3__.stringify)(testrunData),
+                    };
+                    testrail.updateRun(testrunID, testrunUpdate);
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.endGroup();
                     time = new Date().toTimeString();
                     setOutput('testrun_URL', time);
