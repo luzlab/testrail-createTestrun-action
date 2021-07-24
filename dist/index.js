@@ -52146,14 +52146,14 @@ var skipTokens = [
 run();
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestDescription_1, pullrequestLink, octokit, host, password, user, testrail, testrailSuite, testrailProject, testrunRequest, testrun, testrunID, testrunURL, pullrequestComment, pullrequestData, commentData, commentRequest, comment, testrunDescription, testrunData, testrunUpdateRequest, testrunUpdate, time, error_1;
+        var _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestDescription, pullrequestLink, octokit, host, password, user, testrail, testrailSuite, testrailProject, token, testrunRequest, testrun, testrunID, testrunURL, pullrequestComment, pullrequestData, commentData, commentRequest, comment, testrunDescription, testrunData, testrunUpdateRequest, testrunUpdate, time, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 4, , 5]);
                     _a = context.payload, pullrequestNumber = _a.number, pull_request = _a.pull_request, repository = _a.repository;
                     repoOwner = repository.owner.login, repoName = repository.name;
-                    pullrequestTitle = pull_request.title, pullrequestDescription_1 = pull_request.body, pullrequestLink = pull_request._links.html.href;
+                    pullrequestTitle = pull_request.title, pullrequestDescription = pull_request.body, pullrequestLink = pull_request._links.html.href;
                     octokit = getOctokit(getInput('github_token')).rest;
                     host = getInput('testrail_URL');
                     password = getInput('testrail_token');
@@ -52162,12 +52162,13 @@ function run() {
                     testrailSuite = parseInt(getInput('testrail_suite'));
                     testrailProject = parseInt(getInput('testrail_project'));
                     ///// Check for [no testrun] in PR
-                    skipTokens.forEach(function (token) {
-                        if (pullrequestDescription_1.includes(token)) {
+                    for (token in skipTokens) {
+                        if (pullrequestDescription.includes(token)) {
                             console.log("PR description contains " + token + ", aborting action.");
-                            return;
+                            return [2 /*return*/];
                         }
-                    });
+                    }
+                    ;
                     ///// Create Testrail testrun
                     _actions_core__WEBPACK_IMPORTED_MODULE_0__.startGroup('Create Testrail testrun');
                     testrunRequest = {

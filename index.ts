@@ -48,12 +48,12 @@ async function run() {
     const testrailProject = parseInt(getInput('testrail_project'));
 
     ///// Check for [no testrun] in PR
-    skipTokens.forEach((token) => {
+    for (const token in skipTokens) {
       if (pullrequestDescription!.includes(token)) {
         console.log(`PR description contains ${token}, aborting action.`);
         return;
       }
-    });
+    };
 
     ///// Create Testrail testrun
     core.startGroup('Create Testrail testrun');
