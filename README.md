@@ -5,36 +5,42 @@ opened, this action creates a new testrun in Testrail and adds a comment to the 
 The testrun description and the pullrequest comment contain information that's
 used by later actions. 
 
-## Inputs
+## Screenshots
+![commentscreenshot](./prcomment.png)
 
-### `testrail_project`
+![testrunscreenshot](./testrun.png)
+
+## Usage
+
+### Inputs
+
+#### `testrail_project`
 
 **Required** The ID of the Testrail project the testrun should be added to.
 
-### `testrail_suite`
+#### `testrail_suite`
 
 **Required** The testsuite ID that contains all the acceptance test. No testcases will
 be added to the testrun. Instead, testers are expected to add testcases to the testrun
 manually.
 
-### `testrail_URL`
+#### `testrail_URL`
 
 The URL of the TestRail server. Default `"https://gs3.testrail.io"`.
 
-### `testrail_user`
+#### `testrail_user`
 
 The Testrail user email.
 
-### `testrail_token`
+#### `testrail_token`
 
 The token for logging into Testrail.
 
-### `github_token`
+#### `github_token`
 
 The Github API token used to add the comment to the PR
 
-## Usage
-
+### Skipping
 If the pullrequest description includes any of the following strings, this action
 will _not_ create a testrun.
 
