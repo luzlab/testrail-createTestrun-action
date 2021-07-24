@@ -52154,6 +52154,7 @@ function run() {
                     _a = context.payload, pullrequestNumber = _a.number, pull_request = _a.pull_request, repository = _a.repository;
                     repoOwner = repository.owner.login, repoName = repository.name;
                     pullrequestTitle = pull_request.title, pullrequestDescription = pull_request.body, pullrequestLink = pull_request._links.html.href;
+                    console.log(pull_request);
                     octokit = getOctokit(getInput('github_token')).rest;
                     host = getInput('testrail_URL');
                     password = getInput('testrail_token');

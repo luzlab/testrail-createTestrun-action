@@ -36,6 +36,7 @@ async function run() {
         html: { href: pullrequestLink },
       },
     } = pull_request;
+    console.log(pull_request);
 
     const octokit = getOctokit(getInput('github_token')).rest;
 
