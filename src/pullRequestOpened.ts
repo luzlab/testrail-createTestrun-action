@@ -1,4 +1,4 @@
-import { sdks, eventData, pullrequestInfo, testrunInfo } from './types';
+import { sdks, eventData, pullrequestInfo, testrunInfo, statusContext } from './common';
 import { stringify } from 'yaml';
 
 export default async function (sdk: sdks, eventData: eventData) {
@@ -62,7 +62,7 @@ export default async function (sdk: sdks, eventData: eventData) {
     repo: repoName,
     sha: commitSHA,
     state: 'pending' as any,
-    context: 'testrail-uat',
+    context: statusContext,
     description: 'No UAT tests have been run.',
   };
   const { data: checkResponse } = await octokit.rest.repos.createCommitStatus(

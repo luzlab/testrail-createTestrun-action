@@ -1,6 +1,6 @@
 /// <reference lib="DOM" />
 
-import { testrailContext, testrunInfo } from './types';
+import { testrailContext, testrunInfo, statusContext} from './common';
 import { parseAllDocuments } from 'yaml';
 import ky from 'ky';
 import { encode } from 'js-base64';
@@ -74,7 +74,7 @@ async function pushStatus() {
     state: (passed_count + retest_count) === totalTests ? 'success' : 'failure',
     target_url: window.location.href,
     description: `${passed_count} passing, ${failed_count} failing, ${retest_count} retest, ${otherTests} other`,
-    context: 'Testrail',
+    context: statusContext,
   };
 
   // Update the status for the commit (PR)

@@ -2,11 +2,12 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import Testrail, { INewTestRun } from 'testrail-api';
 import { PullRequestOpenedEvent } from '@octokit/webhooks-types';
-import { stringify } from 'yaml';
 
 import prOpenedHandler from './pullRequestOpened';
+import prClosedHandler from './pullRequestClosed';
+import pullRequestSynchronized from './pullRequestSynchronized';
 
-const { getInput, setOutput, setFailed } = core;
+const { getInput, setFailed } = core;
 const { context, getOctokit } = github;
 
 const skipTokens = [
@@ -17,10 +18,20 @@ const skipTokens = [
 ];
 
 run();
-async function run():Promise<void>  {
+async function run(): Promise<void> {
   try {
-    console.log(context);
-    // Get the JSON webhook payload for the event that triggered the workflow
+    // Setup SDKs
+    const octokit = getOctokit(getInput('github_token'));
+    const testrail = new Testrail({
+      host: getInput('testrail_URL'),
+      password: getInput('testrail_token'),
+      user: getInput('testrail_user'),
+    });
+    const sdks = { core, testrail, octokit };
+
+    // Collect the data
+    const testrailSuite = parseInt(getInput('testrail_suite'));
+    const testrailProject = parseInt(getInput('testrail_project'));
     const {
       number: pullrequestNumber,
       pull_request,
@@ -38,49 +49,48 @@ async function run():Promise<void>  {
       _links: {
         html: { href: pullrequestLink },
       },
-      head: {
-        sha: commitSHA,
-      }
+      head: { sha: commitSHA },
     } = pull_request;
-
     const pullrequestDescription = pullrequestDescriptionRaw || '';
-
-    const octokit = getOctokit(getInput('github_token'));
-
-    const host = getInput('testrail_URL');
-    const password = getInput('testrail_token');
-    const user = getInput('testrail_user');
-    const testrail = new Testrail({ host, password, user });
-
-    const testrailSuite = parseInt(getInput('testrail_suite'));
-    const testrailProject = parseInt(getInput('testrail_project'));
+    const actionData = {
+      pullrequestDescription,
+      pullrequestNumber,
+      pullrequestTitle,
+      pullrequestLink,
+      commitSHA,
+      repoName,
+      repoOwner,
+      testrailSuite,
+      testrailProject,
+    };
 
     ///// Check for [no testrun] in PR
     core.startGroup('Create Testrail testrun');
     for (const token of skipTokens) {
-      console.log(`checking for '${token}'...`)
+      console.log(`checking for '${token}'...`);
       if (pullrequestDescription.includes(token)) {
         console.log(`... PR description contains ${token}, aborting action.`);
         return;
       } else {
-        console.log('... not found')
+        console.log('... not found');
       }
-    };
-
+    }
     ///// Check for Event Type (PR opened or PR Closed)
     console.log(context);
-    if (context.eventName = '') {
-      prOpenedHandler({ core, testrail, octokit }, {
-        pullrequestNumber,
-        pullrequestTitle,
-        pullrequestLink,
-        pullrequestDescription,
-        commitSHA,
-        repoName,
-        repoOwner,
-        testrailSuite,
-        testrailProject,
-      });
+    switch (context.action) {
+      case 'opened':
+        prOpenedHandler(sdks, actionData);
+        break;
+      case 'closed':
+        prClosedHandler(sdks, actionData);
+        break;
+      case 'synchronize':
+        pullRequestSynchronized(sdks, actionData);
+        break;
+      default:
+        console.error(
+          `Received unexpected action '${context.action}'. Only 'opened', 'synchronize' and 'closed' actions are supported.`,
+        );
     }
   } catch (error) {
     setFailed(error.message);

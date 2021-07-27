@@ -1,15 +1,15 @@
-import { sdks, eventData, pullrequestInfo } from './types';
+import { sdks, eventData, pullrequestInfo } from './common';
 import { parseAllDocuments } from 'yaml';
 
-export default async function (sdk: sdks, eventData: eventData) {
-  const { core, testrail } = sdk;
+export default async function (sdks: sdks, eventData: eventData) {
+  const { core, testrail } = sdks;
   const {
     pullrequestDescription,
   } = eventData;
 
   const { testrunID } : pullrequestInfo = parseAllDocuments(pullrequestDescription).pop() as any;
 
-  ///// Close0 testrun
+  ///// Close testrun
   core.startGroup('Close testrun');
   const { body: testrunUpdate } = await testrail.closeRun(
     testrunID,

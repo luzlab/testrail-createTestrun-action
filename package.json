@@ -4,7 +4,7 @@
   "description": "This action runs when a PR is opened and creates a linked TestRun in TestRail",
   "main": "dist/index.js",
   "scripts": {
-    "clean": "rimraf build dist && mkdirp dist build",
+    "clean": "rimraf build dist",
     "build": "run-s clean build-all",
     "build-all": "run-p build:*",
     "build:action": "ncc build src/index.ts ",
