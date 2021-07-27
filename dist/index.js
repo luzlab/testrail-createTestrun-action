@@ -52430,7 +52430,6 @@ function run() {
                     testrailProject: testrailProject,
                 };
                 ///// Check for [no testrun] in PR
-                core.startGroup('Create Testrail testrun');
                 for (_i = 0, skipTokens_1 = skipTokens; _i < skipTokens_1.length; _i++) {
                     token = skipTokens_1[_i];
                     console.log("checking for '" + token + "'...");
@@ -52443,8 +52442,9 @@ function run() {
                     }
                 }
                 ///// Check for Event Type (PR opened or PR Closed)
+                core.startGroup('Create Testrail testrun');
                 console.log(context);
-                switch (context.action) {
+                switch (context.payload.action) {
                     case 'opened':
                         pullRequestOpened(sdks, actionData);
                         break;
@@ -52455,7 +52455,7 @@ function run() {
                         pullRequestSynchronized(sdks, actionData);
                         break;
                     default:
-                        console.error("Received unexpected action '" + context.action + "'. Only 'opened', 'synchronize' and 'closed' actions are supported.");
+                        console.log("Received unexpected action '" + context.action + "'. Only 'opened', 'synchronize' and 'closed' actions are supported.");
                 }
             }
             catch (error) {
