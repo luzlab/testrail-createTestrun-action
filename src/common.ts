@@ -2,6 +2,8 @@ import * as core from '@actions/core';
 import { GitHub } from '@actions/github/lib/utils';
 import TestrailApiClient from 'testrail-api';
 
+export const statusContext = "Testrail";
+
 export interface testrunInfo {
   pullrequestNumber: number;
   pullrequestLink: string;
