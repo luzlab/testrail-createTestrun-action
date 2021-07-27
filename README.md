@@ -6,9 +6,9 @@ The testrun description and the pullrequest comment contain information that's
 used by later actions. 
 
 ## Screenshots
-![commentscreenshot](./prcomment.png)
+![commentscreenshot](./.images/prcomment.png)
 
-![testrunscreenshot](./testrun.png)
+![testrunscreenshot](./.images/testrun.png)
 
 ## Usage
 
@@ -60,3 +60,26 @@ with:
   testrail_suite: 25
   testrail_project: 7
 ```
+
+## Explanation
+
+This action handles the PR `opened`, `synchronize` and `closed` events.
+
+- `opened` A new testrun is created in testrail and a PR status check of `pending` is added. 
+- `synchronize` The PR status check is reset to `pending`.
+- `closed` The testrun is closed in testrail.
+
+## Testrail UI Script
+
+This action includes an accompanying Testrail UI script to add an `Update PR` button to the Testrail UI. Clicking on the button updates the status check on the linked PR. 
+
+![testrunscreenshot](./.images/uiscript.png)
+
+The script is located in `dist/uiscript`. A Github PAT token with `repo` scope must be generated and copied
+into the uiscript. Replace the string `<GITHUB_PAT>` with your PAT, then paste into Testrail as a custom UI script.
+
+Currently, testresult status of `success` or `retest` count as passing. Any other testresult status will results in a failing PR status check and prevent merging.
+
+## Development
+
+Clone the repo, install node modules, and run `npm run build`. This generates both `index.js` for the Github Action and the `uiscript` for Testrail.
