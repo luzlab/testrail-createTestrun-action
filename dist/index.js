@@ -52260,19 +52260,21 @@ var pullRequestClosed_generator = (undefined && undefined.__generator) || functi
 };
 
 /* harmony default export */ function pullRequestClosed(sdks, eventData) {
+    var _a, _b;
     return pullRequestClosed_awaiter(this, void 0, void 0, function () {
         var core, testrail, pullrequestDescription, testrunID, testrunUpdate;
-        return pullRequestClosed_generator(this, function (_a) {
-            switch (_a.label) {
+        return pullRequestClosed_generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     core = sdks.core, testrail = sdks.testrail;
                     pullrequestDescription = eventData.pullrequestDescription;
-                    testrunID = (0,yaml.parseAllDocuments)(pullrequestDescription).pop().testrunID;
+                    testrunID = ((_b = (_a = (0,yaml.parseAllDocuments)(pullrequestDescription).pop()) === null || _a === void 0 ? void 0 : _a.contents) === null || _b === void 0 ? void 0 : _b.toJSON()).testrunID;
                     ///// Close testrun
                     core.startGroup('Close testrun');
+                    console.log(testrunID);
                     return [4 /*yield*/, testrail.closeRun(testrunID)];
                 case 1:
-                    testrunUpdate = (_a.sent()).body;
+                    testrunUpdate = (_c.sent()).body;
                     console.log(testrunUpdate);
                     core.endGroup();
                     return [2 /*return*/];
@@ -52402,66 +52404,78 @@ var skipTokens = [
 run();
 function run() {
     return src_awaiter(this, void 0, void 0, function () {
-        var octokit, testrail, sdks, testrailSuite, testrailProject, _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestDescriptionRaw, pullrequestLink, commitSHA, pullrequestDescription, actionData, _i, skipTokens_1, token;
-        return src_generator(this, function (_b) {
-            try {
-                octokit = getOctokit(getInput('github_token'));
-                testrail = new (testrail_api_default())({
-                    host: getInput('testrail_URL'),
-                    password: getInput('testrail_token'),
-                    user: getInput('testrail_user'),
-                });
-                sdks = { core: core, testrail: testrail, octokit: octokit };
-                testrailSuite = parseInt(getInput('testrail_suite'));
-                testrailProject = parseInt(getInput('testrail_project'));
-                _a = context.payload, pullrequestNumber = _a.number, pull_request = _a.pull_request, repository = _a.repository;
-                repoOwner = repository.owner.login, repoName = repository.name;
-                pullrequestTitle = pull_request.title, pullrequestDescriptionRaw = pull_request.body, pullrequestLink = pull_request._links.html.href, commitSHA = pull_request.head.sha;
-                pullrequestDescription = pullrequestDescriptionRaw || '';
-                actionData = {
-                    pullrequestDescription: pullrequestDescription,
-                    pullrequestNumber: pullrequestNumber,
-                    pullrequestTitle: pullrequestTitle,
-                    pullrequestLink: pullrequestLink,
-                    commitSHA: commitSHA,
-                    repoName: repoName,
-                    repoOwner: repoOwner,
-                    testrailSuite: testrailSuite,
-                    testrailProject: testrailProject,
-                };
-                ///// Check for [no testrun] in PR
-                for (_i = 0, skipTokens_1 = skipTokens; _i < skipTokens_1.length; _i++) {
-                    token = skipTokens_1[_i];
-                    console.log("checking for '" + token + "'...");
-                    if (pullrequestDescription.includes(token)) {
-                        console.log("... PR description contains " + token + ", aborting action.");
-                        return [2 /*return*/];
+        var octokit, testrail, sdks, testrailSuite, testrailProject, _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestDescriptionRaw, pullrequestLink, commitSHA, pullrequestDescription, actionData, _i, skipTokens_1, token, _b, error_1;
+        return src_generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _c.trys.push([0, 9, , 10]);
+                    octokit = getOctokit(getInput('github_token'));
+                    testrail = new (testrail_api_default())({
+                        host: getInput('testrail_URL'),
+                        password: getInput('testrail_token'),
+                        user: getInput('testrail_user'),
+                    });
+                    sdks = { core: core, testrail: testrail, octokit: octokit };
+                    testrailSuite = parseInt(getInput('testrail_suite'));
+                    testrailProject = parseInt(getInput('testrail_project'));
+                    _a = context.payload, pullrequestNumber = _a.number, pull_request = _a.pull_request, repository = _a.repository;
+                    repoOwner = repository.owner.login, repoName = repository.name;
+                    pullrequestTitle = pull_request.title, pullrequestDescriptionRaw = pull_request.body, pullrequestLink = pull_request._links.html.href, commitSHA = pull_request.head.sha;
+                    pullrequestDescription = pullrequestDescriptionRaw || '';
+                    actionData = {
+                        pullrequestDescription: pullrequestDescription,
+                        pullrequestNumber: pullrequestNumber,
+                        pullrequestTitle: pullrequestTitle,
+                        pullrequestLink: pullrequestLink,
+                        commitSHA: commitSHA,
+                        repoName: repoName,
+                        repoOwner: repoOwner,
+                        testrailSuite: testrailSuite,
+                        testrailProject: testrailProject,
+                    };
+                    ///// Check for [no testrun] in PR
+                    for (_i = 0, skipTokens_1 = skipTokens; _i < skipTokens_1.length; _i++) {
+                        token = skipTokens_1[_i];
+                        console.log("checking for '" + token + "'...");
+                        if (pullrequestDescription.includes(token)) {
+                            console.log("... PR description contains " + token + ", aborting action.");
+                            return [2 /*return*/];
+                        }
+                        else {
+                            console.log('... not found');
+                        }
                     }
-                    else {
-                        console.log('... not found');
+                    ///// Check for Event Type (PR opened or PR Closed)
+                    console.log(context);
+                    _b = context.payload.action;
+                    switch (_b) {
+                        case 'opened': return [3 /*break*/, 1];
+                        case 'closed': return [3 /*break*/, 3];
+                        case 'synchronize': return [3 /*break*/, 5];
                     }
-                }
-                ///// Check for Event Type (PR opened or PR Closed)
-                core.startGroup('Create Testrail testrun');
-                console.log(context);
-                switch (context.payload.action) {
-                    case 'opened':
-                        pullRequestOpened(sdks, actionData);
-                        break;
-                    case 'closed':
-                        pullRequestClosed(sdks, actionData);
-                        break;
-                    case 'synchronize':
-                        pullRequestSynchronized(sdks, actionData);
-                        break;
-                    default:
-                        console.log("Received unexpected action '" + context.action + "'. Only 'opened', 'synchronize' and 'closed' actions are supported.");
-                }
+                    return [3 /*break*/, 7];
+                case 1: return [4 /*yield*/, pullRequestOpened(sdks, actionData)];
+                case 2:
+                    _c.sent();
+                    return [3 /*break*/, 8];
+                case 3: return [4 /*yield*/, pullRequestClosed(sdks, actionData)];
+                case 4:
+                    _c.sent();
+                    return [3 /*break*/, 8];
+                case 5: return [4 /*yield*/, pullRequestSynchronized(sdks, actionData)];
+                case 6:
+                    _c.sent();
+                    return [3 /*break*/, 8];
+                case 7:
+                    console.log("Received unexpected action '" + context.action + "'. Only 'opened', 'synchronize' and 'closed' actions are supported.");
+                    _c.label = 8;
+                case 8: return [3 /*break*/, 10];
+                case 9:
+                    error_1 = _c.sent();
+                    setFailed(error_1.message);
+                    return [3 /*break*/, 10];
+                case 10: return [2 /*return*/];
             }
-            catch (error) {
-                setFailed(error.message);
-            }
-            return [2 /*return*/];
         });
     });
 }
