@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import Testrail, { INewTestRun } from 'testrail-api';
+import Testrail from 'testrail-api';
 import { PullRequestOpenedEvent } from '@octokit/webhooks-types';
 
 import prOpenedHandler from './pullRequestOpened';
@@ -76,17 +76,16 @@ async function run(): Promise<void> {
     }
 
     ///// Check for Event Type (PR opened or PR Closed)
-    core.startGroup('Create Testrail testrun');
     console.log(context);
     switch (context.payload.action) {
       case 'opened':
-        prOpenedHandler(sdks, actionData);
+        await prOpenedHandler(sdks, actionData);
         break;
       case 'closed':
-        prClosedHandler(sdks, actionData);
+        await prClosedHandler(sdks, actionData);
         break;
       case 'synchronize':
-        pullRequestSynchronized(sdks, actionData);
+        await pullRequestSynchronized(sdks, actionData);
         break;
       default:
         console.log(
