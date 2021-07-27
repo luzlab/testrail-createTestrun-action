@@ -18,5 +18,5 @@ const uiscriptJSCode = readFileSync(
   join(__dirname, 'build', rollupOutputPath),
   'utf8',
 );
-mkdirp('dist');
+mkdirp.sync('dist');
 writeFileSync('dist/uiscript',`${testRailHeader}\n${uiscriptJSCode}`)

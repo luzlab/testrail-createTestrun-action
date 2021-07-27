@@ -1,6 +1,6 @@
 /// <reference lib="DOM" />
 
-import { testrailContext, testrunInfo, statusContext} from './common';
+import { testrailContext, testrunInfo, statusContext } from './common';
 import { parseAllDocuments } from 'yaml';
 import ky from 'ky';
 import { encode } from 'js-base64';

@@ -52096,6 +52096,9 @@ var github = __nccwpck_require__(5438);
 // EXTERNAL MODULE: ./node_modules/testrail-api/index.js
 var testrail_api = __nccwpck_require__(5381);
 var testrail_api_default = /*#__PURE__*/__nccwpck_require__.n(testrail_api);
+;// CONCATENATED MODULE: ./src/common.ts
+var statusContext = "Testrail";
+
 // EXTERNAL MODULE: ./node_modules/yaml/index.js
 var yaml = __nccwpck_require__(3552);
 ;// CONCATENATED MODULE: ./src/pullRequestOpened.ts
@@ -52135,6 +52138,7 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+
 
 /* harmony default export */ function pullRequestOpened(sdk, eventData) {
     return __awaiter(this, void 0, void 0, function () {
@@ -52186,7 +52190,7 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
                         repo: repoName,
                         sha: commitSHA,
                         state: 'pending',
-                        context: 'testrail-uat',
+                        context: statusContext,
                         description: 'No UAT tests have been run.',
                     };
                     return [4 /*yield*/, octokit.rest.repos.createCommitStatus(statusCheckData)];
@@ -52210,6 +52214,133 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
                 case 4:
                     testrunUpdate = (_a.sent()).body;
                     console.log(testrunUpdate);
+                    core.endGroup();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+
+;// CONCATENATED MODULE: ./src/pullRequestClosed.ts
+var pullRequestClosed_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var pullRequestClosed_generator = (undefined && undefined.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+
+/* harmony default export */ function pullRequestClosed(sdks, eventData) {
+    return pullRequestClosed_awaiter(this, void 0, void 0, function () {
+        var core, testrail, pullrequestDescription, testrunID, testrunUpdate;
+        return pullRequestClosed_generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    core = sdks.core, testrail = sdks.testrail;
+                    pullrequestDescription = eventData.pullrequestDescription;
+                    testrunID = (0,yaml.parseAllDocuments)(pullrequestDescription).pop().testrunID;
+                    ///// Close testrun
+                    core.startGroup('Close testrun');
+                    return [4 /*yield*/, testrail.closeRun(testrunID)];
+                case 1:
+                    testrunUpdate = (_a.sent()).body;
+                    console.log(testrunUpdate);
+                    core.endGroup();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+
+;// CONCATENATED MODULE: ./src/pullRequestSynchronized.ts
+var pullRequestSynchronized_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var pullRequestSynchronized_generator = (undefined && undefined.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+
+/* harmony default export */ function pullRequestSynchronized(sdks, eventData) {
+    return pullRequestSynchronized_awaiter(this, void 0, void 0, function () {
+        var core, octokit, repoName, repoOwner, commitSHA, statusCheckData, checkResponse;
+        return pullRequestSynchronized_generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    core = sdks.core, octokit = sdks.octokit;
+                    repoName = eventData.repoName, repoOwner = eventData.repoOwner, commitSHA = eventData.commitSHA;
+                    ///// Set pending status on commit
+                    core.startGroup('Create pending status on PR');
+                    statusCheckData = {
+                        owner: repoOwner,
+                        repo: repoName,
+                        sha: commitSHA,
+                        state: 'pending',
+                        context: statusContext,
+                        description: 'No UAT tests have been run.',
+                    };
+                    return [4 /*yield*/, octokit.rest.repos.createCommitStatus(statusCheckData)];
+                case 1:
+                    checkResponse = (_a.sent()).data;
+                    console.log(checkResponse);
                     core.endGroup();
                     return [2 /*return*/];
             }
@@ -52258,7 +52389,9 @@ var src_generator = (undefined && undefined.__generator) || function (thisArg, b
 
 
 
-var getInput = core.getInput, setOutput = core.setOutput, setFailed = core.setFailed;
+
+
+var getInput = core.getInput, setFailed = core.setFailed;
 var context = github.context, getOctokit = github.getOctokit;
 var skipTokens = [
     '[skip testrun]',
@@ -52269,21 +52402,33 @@ var skipTokens = [
 run();
 function run() {
     return src_awaiter(this, void 0, void 0, function () {
-        var _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestDescriptionRaw, pullrequestLink, commitSHA, pullrequestDescription, octokit, host, password, user, testrail, testrailSuite, testrailProject, _i, skipTokens_1, token;
+        var octokit, testrail, sdks, testrailSuite, testrailProject, _a, pullrequestNumber, pull_request, repository, repoOwner, repoName, pullrequestTitle, pullrequestDescriptionRaw, pullrequestLink, commitSHA, pullrequestDescription, actionData, _i, skipTokens_1, token;
         return src_generator(this, function (_b) {
             try {
-                console.log(context);
+                octokit = getOctokit(getInput('github_token'));
+                testrail = new (testrail_api_default())({
+                    host: getInput('testrail_URL'),
+                    password: getInput('testrail_token'),
+                    user: getInput('testrail_user'),
+                });
+                sdks = { core: core, testrail: testrail, octokit: octokit };
+                testrailSuite = parseInt(getInput('testrail_suite'));
+                testrailProject = parseInt(getInput('testrail_project'));
                 _a = context.payload, pullrequestNumber = _a.number, pull_request = _a.pull_request, repository = _a.repository;
                 repoOwner = repository.owner.login, repoName = repository.name;
                 pullrequestTitle = pull_request.title, pullrequestDescriptionRaw = pull_request.body, pullrequestLink = pull_request._links.html.href, commitSHA = pull_request.head.sha;
                 pullrequestDescription = pullrequestDescriptionRaw || '';
-                octokit = getOctokit(getInput('github_token'));
-                host = getInput('testrail_URL');
-                password = getInput('testrail_token');
-                user = getInput('testrail_user');
-                testrail = new (testrail_api_default())({ host: host, password: password, user: user });
-                testrailSuite = parseInt(getInput('testrail_suite'));
-                testrailProject = parseInt(getInput('testrail_project'));
+                actionData = {
+                    pullrequestDescription: pullrequestDescription,
+                    pullrequestNumber: pullrequestNumber,
+                    pullrequestTitle: pullrequestTitle,
+                    pullrequestLink: pullrequestLink,
+                    commitSHA: commitSHA,
+                    repoName: repoName,
+                    repoOwner: repoOwner,
+                    testrailSuite: testrailSuite,
+                    testrailProject: testrailProject,
+                };
                 ///// Check for [no testrun] in PR
                 core.startGroup('Create Testrail testrun');
                 for (_i = 0, skipTokens_1 = skipTokens; _i < skipTokens_1.length; _i++) {
@@ -52297,21 +52442,20 @@ function run() {
                         console.log('... not found');
                     }
                 }
-                ;
                 ///// Check for Event Type (PR opened or PR Closed)
                 console.log(context);
-                if (context.eventName = '') {
-                    pullRequestOpened({ core: core, testrail: testrail, octokit: octokit }, {
-                        pullrequestNumber: pullrequestNumber,
-                        pullrequestTitle: pullrequestTitle,
-                        pullrequestLink: pullrequestLink,
-                        pullrequestDescription: pullrequestDescription,
-                        commitSHA: commitSHA,
-                        repoName: repoName,
-                        repoOwner: repoOwner,
-                        testrailSuite: testrailSuite,
-                        testrailProject: testrailProject,
-                    });
+                switch (context.action) {
+                    case 'opened':
+                        pullRequestOpened(sdks, actionData);
+                        break;
+                    case 'closed':
+                        pullRequestClosed(sdks, actionData);
+                        break;
+                    case 'synchronize':
+                        pullRequestSynchronized(sdks, actionData);
+                        break;
+                    default:
+                        console.error("Received unexpected action '" + context.action + "'. Only 'opened', 'synchronize' and 'closed' actions are supported.");
                 }
             }
             catch (error) {

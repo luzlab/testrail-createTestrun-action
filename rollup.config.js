@@ -4,16 +4,15 @@ import typescript from '@rollup/plugin-typescript';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 
-
 const baseConfig = createBasicConfig();
 
 export default merge(baseConfig, {
   input: './src/uiscript.ts',
   plugins: [
-    nodeResolve({modulesOnly: true, }),
+    nodeResolve({ modulesOnly: true }),
     commonjs(),
     typescript({
-      include: './src/uiscript.ts',
+      include: ['./src/uiscript.ts', './src/common.ts'],
       tsconfig: 'tsconfig.uiscript.json',
     }),
   ],
