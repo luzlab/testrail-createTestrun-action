@@ -65,7 +65,6 @@ async function run(): Promise<void> {
     };
 
     ///// Check for [no testrun] in PR
-    core.startGroup('Create Testrail testrun');
     for (const token of skipTokens) {
       console.log(`checking for '${token}'...`);
       if (pullrequestDescription.includes(token)) {
@@ -75,9 +74,11 @@ async function run(): Promise<void> {
         console.log('... not found');
       }
     }
+
     ///// Check for Event Type (PR opened or PR Closed)
+    core.startGroup('Create Testrail testrun');
     console.log(context);
-    switch (context.action) {
+    switch (context.payload.action) {
       case 'opened':
         prOpenedHandler(sdks, actionData);
         break;
