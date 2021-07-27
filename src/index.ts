@@ -88,7 +88,7 @@ async function run(): Promise<void> {
         pullRequestSynchronized(sdks, actionData);
         break;
       default:
-        console.error(
+        console.log(
           `Received unexpected action '${context.action}'. Only 'opened', 'synchronize' and 'closed' actions are supported.`,
         );
     }
